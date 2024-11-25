@@ -100,11 +100,13 @@
                            ;; As first step we apply the selector to
                            ;; the new source value.
                            new-value   (selector-fn new-source-value)
-                           old-value   (selector-fn old-source-value)]
+                           old-value
+                           (if (and (identical? srccache old-source-value)
+                                    (not (identical? cache EMPTY)))
+                             cache
+                             (selector-fn old-source-value))]
 
-                       ;; Store the new source value in the instance;
-                       ;; this is mainly used by the deref, so this is
-                       ;; just a small performance improvement for it.
+                       ;; Store the new source value in the instance cache
                        (set! srccache new-source-value)
 
                        ;; Cache the new value in the instance.
